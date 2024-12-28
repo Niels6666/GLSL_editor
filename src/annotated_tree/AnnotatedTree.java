@@ -8,7 +8,7 @@ import info.ParsingInfo;
 
 public abstract class AnnotatedTree {
 	protected List<AnnotatedTree> children = new ArrayList<>();
-	
+
 	public void addChild(AnnotatedTree child) {
 		children.add(child);
 	}
@@ -20,9 +20,11 @@ public abstract class AnnotatedTree {
 	public AnnotatedTree getChild(int index) {
 		return children.get(index);
 	}
+
+	
 	
 	public abstract void analyse(MyDocument document, ParsingInfo info);
-	
+
 	@Override
 	public String toString() {
 		return getClass().getSimpleName();

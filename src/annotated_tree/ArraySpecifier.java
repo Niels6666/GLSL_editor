@@ -8,6 +8,17 @@ import info.ParsingInfo;
 
 public class ArraySpecifier extends AnnotatedTree{
 
+	private int dimensions;
+	
+	public int getDimensions() {
+		return dimensions;
+	}
+
+	@Override
+	protected void buildTree() {
+		dimensions = getChildCount() / 3;
+	}
+	
 	@Override
 	public void analyse(MyDocument document, ParsingInfo info) {
 		

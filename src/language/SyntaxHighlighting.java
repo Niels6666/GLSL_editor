@@ -16,6 +16,7 @@ public final class SyntaxHighlighting {
 	private SyntaxHighlighting() {
 		throw new UnsupportedOperationException();
 	}
+	
 
 	/**
 	 * @param symbol
@@ -74,7 +75,7 @@ public final class SyntaxHighlighting {
 		return res;
 	}
 
-	private static final AttributeSet[] colors = new AttributeSet[NVIDIALexer.VOCABULARY.getMaxTokenType() + 1];
+	private static final AttributeSet[] colors = new AttributeSet[NVIDIALexer.VOCABULARY.getMaxTokenType() + 1 + 8];
 
 	static {
 		colors[0] = UNKNOWN;

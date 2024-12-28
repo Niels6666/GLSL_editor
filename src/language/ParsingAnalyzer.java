@@ -3,17 +3,12 @@ package language;
 import java.util.Stack;
 
 import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
 
-import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
@@ -57,10 +52,10 @@ import annotated_tree.TypeQualifier;
 import annotated_tree.TypeSpecifier;
 import annotated_tree.TypelessDeclaration;
 import annotated_tree.UnaryExpression;
+import annotated_tree.Variable;
 import editor.MyDocument;
 import info.ParsingInfo;
 import info.PreParsingInfo;
-import main.java.testNVIDIA.NVIDIALexer;
 import main.java.testNVIDIA.NVIDIAParser.Array_specifierContext;
 import main.java.testNVIDIA.NVIDIAParser.Assignment_expressionContext;
 import main.java.testNVIDIA.NVIDIAParser.Assignment_operatorContext;
@@ -132,7 +127,6 @@ import main.java.testNVIDIA.NVIDIAParser.Typeless_declarationContext;
 import main.java.testNVIDIA.NVIDIAParser.Unary_expressionContext;
 import main.java.testNVIDIA.NVIDIAParser.Unary_operatorContext;
 import main.java.testNVIDIA.NVIDIAParser.Variable_identifierContext;
-import main.java.testNVIDIA.NVIDIAParserBaseListener;
 import main.java.testNVIDIA.NVIDIAParserListener;
 
 public class ParsingAnalyzer implements NVIDIAParserListener {
@@ -697,12 +691,11 @@ public class ParsingAnalyzer implements NVIDIAParserListener {
 
 	@Override
 	public void enterVariable_identifier(Variable_identifierContext ctx) {
-		ignoreRule();
+		stack.push(new Variable());
 	}
 
 	@Override
 	public void exitVariable_identifier(Variable_identifierContext ctx) {
-		ignoreRule();
 	}
 
 	@Override
@@ -991,17 +984,20 @@ public class ParsingAnalyzer implements NVIDIAParserListener {
 		}
 		AnnotatedTree child = stack.pop();
 		// add child to parent
-		stack.getLast().addChild(child);
+//		stack.getLast().addChild(child);
+		stack.peek().addChild(child);
 	}
 
 	@Override
 	public void visitTerminal(TerminalNode node) {
-		stack.getLast().addChild(new AnnotatedToken(node));
+//		stack.getLast().addChild(new AnnotatedToken(node));
+		stack.peek().addChild(new AnnotatedToken(node));
 	}
 
 	@Override
 	public void visitErrorNode(ErrorNode node) {
-		stack.getLast().addChild(new AnnotatedError(node));
+//		stack.getLast().addChild(new AnnotatedError(node));
+		stack.peek().addChild(new AnnotatedError(node));
 	}
 
 	private void basicHighlighting(ParseTree tree) {

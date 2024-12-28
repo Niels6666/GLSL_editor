@@ -12,4 +12,8 @@ public class AssignmentExpression extends AnnotatedTree{
 	public void analyse(MyDocument document, ParsingInfo info) {
 		
 	}
+
+	@Override
+	protected void buildTree() {
+	}
 }

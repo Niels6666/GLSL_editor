@@ -1,15 +1,30 @@
 package annotated_tree;
 
-import org.antlr.v4.runtime.tree.ErrorNode;
-import org.antlr.v4.runtime.tree.TerminalNode;
-
 import editor.MyDocument;
 import info.ParsingInfo;
 
-public class FullySpecifiedType extends AnnotatedTree{
+public class FullySpecifiedType extends AnnotatedTree {
+	TypeQualifier qualifier;
+	TypeSpecifier specifier;
 
 	@Override
 	public void analyse(MyDocument document, ParsingInfo info) {
-		
+		for (AnnotatedTree child : children) {
+			child.analyse(document, info);
+		}
+	}
+
+	@Override
+	protected void buildTree() {
+		AnnotatedTree child0 = children.get(0);
+		if(child0 instanceof TypeQualifier) {
+			qualifier = (TypeQualifier) child0;
+			specifier = (TypeSpecifier) children.get(1);
+		}else {
+			specifier = (TypeSpecifier) child0;
+		}
+		for (AnnotatedTree child : children) {
+			child.buildTree();
+		}
 	}
 }

@@ -33,4 +33,8 @@ public class AnnotatedError extends AnnotatedTree{
 	public String toString() {
 		return "[ErrorNode " + node.getText() + " ]";
 	}
+
+	@Override
+	protected void buildTree() {
+	}
 }
