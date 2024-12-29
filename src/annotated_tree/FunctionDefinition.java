@@ -14,13 +14,10 @@ public class FunctionDefinition extends AnnotatedTree {
 	@Override
 	public void analyse(MyDocument document, ParsingInfo info) {
 		name.type = SyntaxHighlighting.FUNCTION_DECLARATION_TYPE;
-		for(AnnotatedTree child: children) {
-			child.analyse(document, info);
-		}
 	}
 
 	@Override
-	protected void buildTree() {
+	public void build() {
 		type = (FullySpecifiedType) children.get(0);
 		AnnotatedTree child2 = children.get(1);
 		if (child2 instanceof Pointer) {
@@ -32,9 +29,5 @@ public class FunctionDefinition extends AnnotatedTree {
 		body = (CompoundStatement) children.get(children.size() - 1);
 		parameters = children.stream().filter(e -> FunctionParameter.class.isInstance(e))
 				.map(e -> FunctionParameter.class.cast(e)).toArray(FunctionParameter[]::new);
-		
-		for(AnnotatedTree child: children) {
-			child.buildTree();
-		}
 	}
 }

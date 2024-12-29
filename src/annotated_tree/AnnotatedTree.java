@@ -21,12 +21,16 @@ public abstract class AnnotatedTree {
 		return children.get(index);
 	}
 
-	
-	
+	public abstract void build();
+
 	public abstract void analyse(MyDocument document, ParsingInfo info);
 
 	@Override
 	public String toString() {
 		return getClass().getSimpleName();
+	}
+
+	public boolean hasErrors() {
+		return children.stream().anyMatch(e->e instanceof AnnotatedError);
 	}
 }

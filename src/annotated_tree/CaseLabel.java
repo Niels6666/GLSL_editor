@@ -12,4 +12,8 @@ public class CaseLabel extends AnnotatedTree{
 	public void analyse(MyDocument document, ParsingInfo info) {
 		
 	}
+
+	@Override
+	public void build() {
+	}
 }

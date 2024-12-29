@@ -9,22 +9,17 @@ public class FullySpecifiedType extends AnnotatedTree {
 
 	@Override
 	public void analyse(MyDocument document, ParsingInfo info) {
-		for (AnnotatedTree child : children) {
-			child.analyse(document, info);
-		}
 	}
 
+
 	@Override
-	protected void buildTree() {
+	public void build() {
 		AnnotatedTree child0 = children.get(0);
 		if(child0 instanceof TypeQualifier) {
 			qualifier = (TypeQualifier) child0;
 			specifier = (TypeSpecifier) children.get(1);
 		}else {
 			specifier = (TypeSpecifier) child0;
-		}
-		for (AnnotatedTree child : children) {
-			child.buildTree();
 		}
 	}
 }

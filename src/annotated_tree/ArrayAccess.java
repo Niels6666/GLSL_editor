@@ -7,11 +7,11 @@ public class ArrayAccess extends AnnotatedTree {
 	
 	
 	@Override
-	protected void buildTree() {
-	}
-	
-	@Override
 	public void analyse(MyDocument document, ParsingInfo info) {
 		
+	}
+
+	@Override
+	public void build() {
 	}
 }

@@ -12,4 +12,9 @@ public class StorageQualifier extends AnnotatedTree{
 	public void analyse(MyDocument document, ParsingInfo info) {
 		
 	}
+
+	@Override
+	public void build() {
+		
+	}
 }

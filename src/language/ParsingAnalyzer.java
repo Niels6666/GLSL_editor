@@ -52,7 +52,6 @@ import annotated_tree.TypeQualifier;
 import annotated_tree.TypeSpecifier;
 import annotated_tree.TypelessDeclaration;
 import annotated_tree.UnaryExpression;
-import annotated_tree.Variable;
 import editor.MyDocument;
 import info.ParsingInfo;
 import info.PreParsingInfo;
@@ -142,13 +141,21 @@ public class ParsingAnalyzer implements NVIDIAParserListener {
 
 	public AnnotatedTree analyze(ParseTree tree, PreParsingInfo preParsingInfo) {
 		this.info = new ParsingInfo();
-		
+
 		stack = new Stack<>();
 		walk(tree);
 		AnnotatedTree result = stack.pop();
 		assert stack.isEmpty();
-		result.analyse(document, info);
+		analyse(result);
 		return result;
+	}
+
+	private void analyse(AnnotatedTree node) {
+		int n = node.getChildCount();
+		node.analyse(document, info);
+		for (int i = 0; i < n; i++) {
+			analyse(node.getChild(i));
+		}
 	}
 
 	private void walk(ParseTree tree) {
@@ -691,11 +698,12 @@ public class ParsingAnalyzer implements NVIDIAParserListener {
 
 	@Override
 	public void enterVariable_identifier(Variable_identifierContext ctx) {
-		stack.push(new Variable());
+		ignoreRule();
 	}
 
 	@Override
 	public void exitVariable_identifier(Variable_identifierContext ctx) {
+		ignoreRule();
 	}
 
 	@Override
@@ -983,9 +991,13 @@ public class ParsingAnalyzer implements NVIDIAParserListener {
 			return;
 		}
 		AnnotatedTree child = stack.pop();
+		try {
+			child.build();
+		} catch (Exception e) {
+		}
+		stack.peek().addChild(child);
 		// add child to parent
 //		stack.getLast().addChild(child);
-		stack.peek().addChild(child);
 	}
 
 	@Override
@@ -1021,7 +1033,7 @@ public class ParsingAnalyzer implements NVIDIAParserListener {
 		int offset = token.getStartIndex();
 		int length = token.getText().length();
 
-		AttributeSet highlight = SyntaxHighlighting.getColor(token);
+		AttributeSet highlight = SyntaxHighlighting.getColor(token.getType());
 		if (highlight == null) {
 			highlight = SyntaxHighlighting.UNKNOWN;
 		}

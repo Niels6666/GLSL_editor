@@ -22,8 +22,7 @@ public final class SyntaxHighlighting {
 	 * @param symbol
 	 * @return null if this symbol is not associated with a color.
 	 */
-	public static final AttributeSet getColor(Token symbol) {
-		int type = symbol.getType();
+	public static final AttributeSet getColor(int type) {
 		return type > 0 ? colors[type] : null;
 	}
 
@@ -63,7 +62,7 @@ public final class SyntaxHighlighting {
 	public static final AttributeSet TYPE_MEMBER = create(new Color(102, 225, 248), false, false);
 	public static final AttributeSet FUNCTION_DECLARATION = create(new Color(30, 181, 64), false, false);
 	public static final AttributeSet FUNCTION_CALL = create(new Color(150, 236, 58), false, false);
-	public static final AttributeSet PARAMETER_IDENTIFIER = create(new Color(191, 169, 254), false, false);
+	public static final AttributeSet PARAMETER_IDENTIFIER = create(new Color(99, 169, 255), false, false);
 	public static final AttributeSet LOCALVAR_IDENTIFIER = create(new Color(243, 236, 121), false, false);
 	public static final AttributeSet GLOBAL_IDENTIFIER = create(new Color(141, 218, 248), true, true);
 

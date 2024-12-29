@@ -84,7 +84,7 @@ public class PreParsingAnalyzer extends NVIDIAPreParserBaseListener {
 
 		int offset = token.getStartIndex();
 		int length = text.length();
-		AttributeSet highlight = SyntaxHighlighting.getColor(token);
+		AttributeSet highlight = SyntaxHighlighting.getColor(token.getType());
 		document.setCharacterAttributes(offset, length, highlight, true);
 	}
 	

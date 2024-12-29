@@ -11,7 +11,6 @@ import info.ParsingInfo;
 import language.SyntaxHighlighting;
 
 public class TypelessDeclaration extends AnnotatedTree{
-	boolean global = false;
 	Pointer pointer;
 	AnnotatedToken name;
 	ArraySpecifier arraySpec;
@@ -19,19 +18,11 @@ public class TypelessDeclaration extends AnnotatedTree{
 	
 	@Override
 	public void analyse(MyDocument document, ParsingInfo info) {
-		if(global) {
-			name.type = SyntaxHighlighting.GLOBAL_IDENTIFIER_TYPE;
-		}else {
-			name.type = SyntaxHighlighting.LOCALVAR_IDENTIFIER_TYPE;
-		}
-		
-		for(AnnotatedTree child: children) {
-			child.analyse(document, info);
-		}
 	}
 
+
 	@Override
-	protected void buildTree() {
+	public void build() {
 		List<Object> types = Arrays.asList(children.stream().map(e -> e.getClass()).toArray());
 		int indexOf = types.indexOf(Pointer.class);
 		if (indexOf != -1) {

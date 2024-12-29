@@ -35,6 +35,6 @@ public class AnnotatedError extends AnnotatedTree{
 	}
 
 	@Override
-	protected void buildTree() {
+	public void build() {
 	}
 }

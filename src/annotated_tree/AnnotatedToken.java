@@ -11,21 +11,20 @@ import info.ParsingInfo;
 import language.SyntaxHighlighting;
 
 public class AnnotatedToken extends AnnotatedTree {
-	public TerminalNode node;
+	public Token symbol;
 	public int type;
 
 	public AnnotatedToken(TerminalNode node) {
-		this.node = node;
+		this.symbol = node.getSymbol();
 		this.type = node.getSymbol().getType();
 	}
 
 	@Override
 	public void analyse(MyDocument document, ParsingInfo info) {
-		Token token = node.getSymbol();
-		int offset = token.getStartIndex();
-		int length = token.getText().length();
+		int offset = symbol.getStartIndex();
+		int length = symbol.getText().length();
 
-		AttributeSet highlight = SyntaxHighlighting.getColor(token);
+		AttributeSet highlight = SyntaxHighlighting.getColor(type);
 		if (highlight == null) {
 			highlight = SyntaxHighlighting.UNKNOWN;
 		}
@@ -35,12 +34,11 @@ public class AnnotatedToken extends AnnotatedTree {
 	
 	@Override
 	public String toString() {
-		Token symbol = node.getSymbol();
 		String nameType = symbol.getType() == Token.EOF ? "EOF" : CodeTree.names.get(symbol.getType());
-		return "[TerminalNode " + node.getText() + "<" + nameType + ">" + " ]";
+		return "[TerminalNode " + symbol.getText() + "<" + nameType + ">" + " ]";
 	}
 
 	@Override
-	protected void buildTree() {
+	public void build() {
 	}
 }

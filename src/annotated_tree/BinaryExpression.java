@@ -12,4 +12,10 @@ public class BinaryExpression extends AnnotatedTree{
 	public void analyse(MyDocument document, ParsingInfo info) {
 		
 	}
+
+	@Override
+	public void build() {
+		// TODO Auto-generated method stub
+		
+	}
 }

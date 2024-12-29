@@ -1,14 +1,10 @@
 package annotated_tree;
 
-import org.antlr.v4.runtime.tree.ErrorNode;
-import org.antlr.v4.runtime.tree.TerminalNode;
-
 import editor.MyDocument;
 import info.ParsingInfo;
 import language.SyntaxHighlighting;
 
 public class BlockStructure extends AnnotatedTree {
-	boolean global = false;
 	TypeQualifier qualifier;
 	AnnotatedToken structureName;
 	StructDeclaration[] declarations;
@@ -18,10 +14,6 @@ public class BlockStructure extends AnnotatedTree {
 
 	@Override
 	public void analyse(MyDocument document, ParsingInfo info) {
-		for (AnnotatedTree child : children) {
-			child.analyse(document, info);
-		}
-
 		structureName.type = SyntaxHighlighting.TYPE_NAME_TYPE;
 
 		if (instanceName != null) {
@@ -29,8 +21,9 @@ public class BlockStructure extends AnnotatedTree {
 		}
 	}
 
+
 	@Override
-	protected void buildTree() {
+	public void build() {
 		qualifier = (TypeQualifier) children.get(0);
 		structureName = (AnnotatedToken) children.get(1);
 
@@ -43,10 +36,6 @@ public class BlockStructure extends AnnotatedTree {
 			if (child5pn instanceof ArraySpecifier) {
 				instanceArraySpec = (ArraySpecifier) child5pn;
 			}
-		}
-
-		for (AnnotatedTree child : children) {
-			child.buildTree();
-		}
+		}		
 	}
 }

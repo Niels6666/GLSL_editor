@@ -25,7 +25,7 @@ public class FunctionParameter extends AnnotatedTree {
 	}
 
 	@Override
-	protected void buildTree() {
+	public void build() {
 		List<Object> types = Arrays.asList(children.stream().map(e -> e.getClass()).toArray());
 		int indexOf = types.indexOf(TypeQualifier.class);
 		if (indexOf != -1) {
@@ -46,10 +46,7 @@ public class FunctionParameter extends AnnotatedTree {
 		indexOf = types.indexOf(ArraySpecifier.class);
 		if (indexOf != -1) {
 			arraySpec = (ArraySpecifier) children.get(indexOf);
-		}
-		
-		for(AnnotatedTree child: children) {
-			child.buildTree();
-		}
+		}		
 	}
+
 }

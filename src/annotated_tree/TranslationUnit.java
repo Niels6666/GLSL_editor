@@ -26,17 +26,10 @@ public class TranslationUnit extends AnnotatedTree {
 
 	@Override
 	public void analyse(MyDocument document, ParsingInfo info) {
-		declarations.forEach(e->e.global = true);
-		blockStructures.forEach(e->e.global = true);
-		simpleDeclarations.forEach(e->e.global = true);
-
-		for(AnnotatedTree child: children) {
-			child.analyse(document, info);
-		}
 	}
 
 	@Override
-	protected void buildTree() {
+	public void build() {
 		functions.addAll(children.stream().filter(e -> FunctionDefinition.class.isInstance(e))
 				.map(e -> FunctionDefinition.class.cast(e)).toList());
 		prototypes.addAll(children.stream().filter(e -> FunctionPrototype.class.isInstance(e))
@@ -48,10 +41,7 @@ public class TranslationUnit extends AnnotatedTree {
 		simpleDeclarations.addAll(children.stream().filter(e -> SimpleDeclaration.class.isInstance(e))
 				.map(e -> SimpleDeclaration.class.cast(e)).toList());
 		
-		for(AnnotatedTree child: children) {
-			child.buildTree();
-		}
-		
 	}
+
 
 }
