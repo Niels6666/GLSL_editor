@@ -18,16 +18,6 @@ public interface NVIDIAParserListener extends ParseTreeListener {
 	 */
 	void exitTranslation_unit(NVIDIAParser.Translation_unitContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link NVIDIAParser#variable_identifier}.
-	 * @param ctx the parse tree
-	 */
-	void enterVariable_identifier(NVIDIAParser.Variable_identifierContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link NVIDIAParser#variable_identifier}.
-	 * @param ctx the parse tree
-	 */
-	void exitVariable_identifier(NVIDIAParser.Variable_identifierContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link NVIDIAParser#primary_expression}.
 	 * @param ctx the parse tree
 	 */
@@ -48,16 +38,6 @@ public interface NVIDIAParserListener extends ParseTreeListener {
 	 */
 	void exitPostfix_expression(NVIDIAParser.Postfix_expressionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link NVIDIAParser#field_selection}.
-	 * @param ctx the parse tree
-	 */
-	void enterField_selection(NVIDIAParser.Field_selectionContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link NVIDIAParser#field_selection}.
-	 * @param ctx the parse tree
-	 */
-	void exitField_selection(NVIDIAParser.Field_selectionContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link NVIDIAParser#integer_expression}.
 	 * @param ctx the parse tree
 	 */
@@ -67,26 +47,6 @@ public interface NVIDIAParserListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitInteger_expression(NVIDIAParser.Integer_expressionContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link NVIDIAParser#function_call}.
-	 * @param ctx the parse tree
-	 */
-	void enterFunction_call(NVIDIAParser.Function_callContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link NVIDIAParser#function_call}.
-	 * @param ctx the parse tree
-	 */
-	void exitFunction_call(NVIDIAParser.Function_callContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link NVIDIAParser#function_identifier}.
-	 * @param ctx the parse tree
-	 */
-	void enterFunction_identifier(NVIDIAParser.Function_identifierContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link NVIDIAParser#function_identifier}.
-	 * @param ctx the parse tree
-	 */
-	void exitFunction_identifier(NVIDIAParser.Function_identifierContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link NVIDIAParser#function_call_parameters}.
 	 * @param ctx the parse tree

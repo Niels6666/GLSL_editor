@@ -71,14 +71,11 @@ import main.java.testNVIDIA.NVIDIAParser.DimensionContext;
 import main.java.testNVIDIA.NVIDIAParser.ExpressionContext;
 import main.java.testNVIDIA.NVIDIAParser.Expression_statementContext;
 import main.java.testNVIDIA.NVIDIAParser.External_declarationContext;
-import main.java.testNVIDIA.NVIDIAParser.Field_selectionContext;
 import main.java.testNVIDIA.NVIDIAParser.For_init_statementContext;
 import main.java.testNVIDIA.NVIDIAParser.For_rest_statementContext;
 import main.java.testNVIDIA.NVIDIAParser.Fully_specified_typeContext;
-import main.java.testNVIDIA.NVIDIAParser.Function_callContext;
 import main.java.testNVIDIA.NVIDIAParser.Function_call_parametersContext;
 import main.java.testNVIDIA.NVIDIAParser.Function_definitionContext;
-import main.java.testNVIDIA.NVIDIAParser.Function_identifierContext;
 import main.java.testNVIDIA.NVIDIAParser.Function_parametersContext;
 import main.java.testNVIDIA.NVIDIAParser.Function_prototypeContext;
 import main.java.testNVIDIA.NVIDIAParser.Identifier_listContext;
@@ -125,7 +122,6 @@ import main.java.testNVIDIA.NVIDIAParser.Type_specifier_nonarrayContext;
 import main.java.testNVIDIA.NVIDIAParser.Typeless_declarationContext;
 import main.java.testNVIDIA.NVIDIAParser.Unary_expressionContext;
 import main.java.testNVIDIA.NVIDIAParser.Unary_operatorContext;
-import main.java.testNVIDIA.NVIDIAParser.Variable_identifierContext;
 import main.java.testNVIDIA.NVIDIAParserListener;
 
 public class ParsingAnalyzer implements NVIDIAParserListener {
@@ -173,11 +169,11 @@ public class ParsingAnalyzer implements NVIDIAParserListener {
 
 		if (skipBranch) {
 			skipBranch = false;
-			int start = ctx.start.getStartIndex();
-			int stop = ctx.stop.getStopIndex();
-			if (start >= 0 && stop > 0) {
-				document.setCharacterAttributes(start, stop - start + 1, SyntaxHighlighting.WARNING_HIGHLIGHT, false);
-			}
+//			int start = ctx.start.getStartIndex();
+//			int stop = ctx.stop.getStopIndex();
+//			if (start >= 0 && stop > 0) {
+//				document.setCharacterAttributes(start, stop - start + 1, SyntaxHighlighting.WARNING_HIGHLIGHT, false);
+//			}
 			basicHighlighting(tree);
 			return;
 		}
@@ -694,54 +690,6 @@ public class ParsingAnalyzer implements NVIDIAParserListener {
 	@Override
 	public void exitPrimary_expression(Primary_expressionContext ctx) {
 		ignoreRule();
-	}
-
-	@Override
-	public void enterVariable_identifier(Variable_identifierContext ctx) {
-		ignoreRule();
-	}
-
-	@Override
-	public void exitVariable_identifier(Variable_identifierContext ctx) {
-		ignoreRule();
-	}
-
-	@Override
-	public void enterField_selection(Field_selectionContext ctx) {
-		ParseTree child = ctx.getChild(0);
-		if (child instanceof Variable_identifierContext) {
-			ignoreRule();
-		} else {
-			skipBranch();
-		}
-	}
-
-	@Override
-	public void exitField_selection(Field_selectionContext ctx) {
-		ParseTree child = ctx.getChild(0);
-		if (child instanceof Variable_identifierContext) {
-			ignoreRule();
-		}
-	}
-
-	@Override
-	public void enterFunction_call(Function_callContext ctx) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void exitFunction_call(Function_callContext ctx) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void enterFunction_identifier(Function_identifierContext ctx) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void exitFunction_identifier(Function_identifierContext ctx) {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override

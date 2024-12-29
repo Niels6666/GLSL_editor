@@ -28,18 +28,6 @@ public class NVIDIAParserBaseListener implements NVIDIAParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVariable_identifier(NVIDIAParser.Variable_identifierContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitVariable_identifier(NVIDIAParser.Variable_identifierContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterPrimary_expression(NVIDIAParser.Primary_expressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -64,18 +52,6 @@ public class NVIDIAParserBaseListener implements NVIDIAParserListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterField_selection(NVIDIAParser.Field_selectionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitField_selection(NVIDIAParser.Field_selectionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterInteger_expression(NVIDIAParser.Integer_expressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -83,30 +59,6 @@ public class NVIDIAParserBaseListener implements NVIDIAParserListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitInteger_expression(NVIDIAParser.Integer_expressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterFunction_call(NVIDIAParser.Function_callContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitFunction_call(NVIDIAParser.Function_callContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterFunction_identifier(NVIDIAParser.Function_identifierContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitFunction_identifier(NVIDIAParser.Function_identifierContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

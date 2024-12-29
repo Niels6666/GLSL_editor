@@ -35,12 +35,8 @@ translation_unit
     : external_declaration* EOF
     ;
 
-variable_identifier
-    : IDENTIFIER
-    ;
-
 primary_expression
-    : variable_identifier
+    : IDENTIFIER
     | TRUE
     | FALSE
     | INTCONSTANT
@@ -53,29 +49,15 @@ primary_expression
 postfix_expression
     : primary_expression
     | postfix_expression LEFT_BRACKET integer_expression RIGHT_BRACKET
-    | postfix_expression LEFT_PAREN function_call_parameters? RIGHT_PAREN
+    | IDENTIFIER LEFT_PAREN function_call_parameters? RIGHT_PAREN
     | layout_qualifier? type_specifier LEFT_PAREN function_call_parameters? RIGHT_PAREN
-    | postfix_expression (DOT | ARROW) field_selection
+    | postfix_expression (DOT | ARROW) IDENTIFIER
     | postfix_expression INC_OP
     | postfix_expression DEC_OP
     ;
 
-field_selection
-    : variable_identifier
-    | function_call
-    ;
-
 integer_expression
     : expression
-    ;
-
-function_call
-    : function_identifier LEFT_PAREN function_call_parameters? RIGHT_PAREN
-    ;
-
-function_identifier
-    : type_specifier
-    | postfix_expression
     ;
 
 function_call_parameters
