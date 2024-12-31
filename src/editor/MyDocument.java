@@ -21,6 +21,7 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import info.ParsingInfo;
 import language.ParsingAnalyzer;
 import language.PreParsingAnalyzer;
 import language.SyntaxHighlighting;
@@ -64,7 +65,7 @@ public class MyDocument extends DefaultStyledDocument implements CaretListener {
 	public void setAbstractSyntaxTree(AbstractSyntaxTree abstractSyntaxTree) {
 		this.abstractSyntaxTree = abstractSyntaxTree;
 	}
-	
+
 	public void setCodeTree(CodeTree codeTree) {
 		this.codeTree = codeTree;
 	}
@@ -95,26 +96,38 @@ public class MyDocument extends DefaultStyledDocument implements CaretListener {
 
 		// pre parsing
 		{
-			NVIDIALexer preLexer = new NVIDIALexer(CharStreams.fromString(text));
-			CommonTokenStream preInput = new CommonTokenStream(preLexer, NVIDIALexer.DIRECTIVES);
-			NVIDIAPreParser preParser = new NVIDIAPreParser(preInput);
-			preParser.setProfile(false);
-			preParser.setTrace(false);
+			NVIDIALexer lexer = new NVIDIALexer(CharStreams.fromString(text));
+			CommonTokenStream input = new CommonTokenStream(lexer, NVIDIALexer.DIRECTIVES);
+			NVIDIAPreParser parser = new NVIDIAPreParser(input);
+			parser.setProfile(false);
+			parser.setTrace(false);
+//			parser.removeErrorListeners();
 
-			ParseTree preParseTree = preParser.translation_unit(); // root rule
-			preParsingAnalyzer.analyze(preParseTree);
+			ParseTree parseTree = parser.translation_unit(); // root rule
+			if (parser.getNumberOfSyntaxErrors() == 0) {
+				preParsingAnalyzer.analyze(parseTree);
+			}else {
+				preParsingAnalyzer.basicHighlighting(parseTree);
+			}
 		}
 
 		{
 			// parsing
 			NVIDIALexer lexer = new NVIDIALexer(CharStreams.fromString(text));
-			TokenStream input = new CommonTokenStream(lexer);
+			CommonTokenStream input = new CommonTokenStream(lexer);
 			NVIDIAParser parser = new NVIDIAParser(input);
 			parser.setProfile(false);
 			parser.setTrace(false);
+//			parser.removeErrorListeners();
 
 			ParseTree parseTree = parser.translation_unit(); // root rule
-			codeTree.buildTree(parsingAnalyzer.analyze(parseTree, preParsingAnalyzer.info));
+			if (parser.getNumberOfSyntaxErrors() == 0) {
+				ParsingInfo info = parsingAnalyzer.analyze(parseTree, preParsingAnalyzer.info);
+				codeTree.buildTree(info.tree);
+			}else {
+				parsingAnalyzer.basicHighlighting(parseTree);
+
+			}
 //			abstractSyntaxTree.buildTree(parseTree);
 		}
 

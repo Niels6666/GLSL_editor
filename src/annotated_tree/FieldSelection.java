@@ -5,7 +5,7 @@ import info.ParsingInfo;
 import language.SyntaxHighlighting;
 
 public class FieldSelection extends AnnotatedTree {
-	AnnotatedToken variableID;
+	Identifier variableID;
 
 	@Override
 	public void analyse(MyDocument document, ParsingInfo info) {
@@ -14,6 +14,6 @@ public class FieldSelection extends AnnotatedTree {
 
 	@Override
 	public void build() {
-		variableID = (AnnotatedToken) children.get(getChildCount() - 1);
+		variableID = (Identifier) children.get(getChildCount() - 1);
 	}
 }

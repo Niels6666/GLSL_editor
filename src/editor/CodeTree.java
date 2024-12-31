@@ -4,21 +4,10 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 
 import javax.swing.JTree;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
-import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.tree.ErrorNode;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.RuleNode;
-import org.antlr.v4.runtime.tree.TerminalNode;
-
-import annotated_tree.AnnotatedError;
-import annotated_tree.AnnotatedToken;
 import annotated_tree.AnnotatedTree;
-import language.GLSLSpecification;
 import main.java.testNVIDIA.NVIDIALexer;
 
 public class CodeTree extends JTree {

@@ -9,7 +9,7 @@ import language.SyntaxHighlighting;
 
 public class StructDeclarator extends AnnotatedTree {
 	Pointer pointer;
-	AnnotatedToken name;
+	Identifier name;
 	ArraySpecifier arraySpec;
 
 	@Override
@@ -24,9 +24,9 @@ public class StructDeclarator extends AnnotatedTree {
 		if (indexOf != -1) {
 			pointer = (Pointer) children.get(indexOf);
 		}
-		indexOf = types.indexOf(AnnotatedToken.class);
+		indexOf = types.indexOf(Identifier.class);
 		if (indexOf != -1) {
-			name = (AnnotatedToken) children.get(indexOf);
+			name = (Identifier) children.get(indexOf);
 		}
 		indexOf = types.indexOf(ArraySpecifier.class);
 		if (indexOf != -1) {

@@ -8,9 +8,7 @@ import annotated_tree.FunctionDefinition;
 public class Scope {
 	public int start;
 	public int stop;
-	public Scope parent;
-	public ArrayList<Scope> children;
-	
+
 	public ArrayList<VariableInfo> variables;
 	public ArrayList<BlockInfo> blocks;
 	public ArrayList<StructInfo> structs;

@@ -11,16 +11,13 @@ public class FunctionParameter extends AnnotatedTree {
 	TypeQualifier qualifier;
 	TypeSpecifier specifier;
 	Pointer pointer;
-	AnnotatedToken name;
+	Identifier name;
 	ArraySpecifier arraySpec;
 
 	@Override
 	public void analyse(MyDocument document, ParsingInfo info) {
 		if(name != null) {
 			name.type = SyntaxHighlighting.PARAMETER_IDENTIFIER_TYPE;
-		}
-		for(AnnotatedTree child: children) {
-			child.analyse(document, info);
 		}
 	}
 
@@ -39,9 +36,9 @@ public class FunctionParameter extends AnnotatedTree {
 		if (indexOf != -1) {
 			pointer = (Pointer) children.get(indexOf);
 		}
-		indexOf = types.indexOf(AnnotatedToken.class);
+		indexOf = types.indexOf(Identifier.class);
 		if (indexOf != -1) {
-			name = (AnnotatedToken) children.get(indexOf);
+			name = (Identifier) children.get(indexOf);
 		}
 		indexOf = types.indexOf(ArraySpecifier.class);
 		if (indexOf != -1) {

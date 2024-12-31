@@ -10,7 +10,7 @@ import language.SyntaxHighlighting;
 public class FunctionPrototype extends AnnotatedTree{
 	FullySpecifiedType type;
 	Pointer pointer;
-	AnnotatedToken name;
+	Identifier name;
 	FunctionParameter[] parameters;
 	
 	@Override
@@ -24,9 +24,9 @@ public class FunctionPrototype extends AnnotatedTree{
 		AnnotatedTree child2 = children.get(1);
 		if (child2 instanceof Pointer) {
 			pointer = (Pointer) child2;
-			name = (AnnotatedToken) children.get(2);
+			name = (Identifier) children.get(2);
 		} else {
-			name = (AnnotatedToken) child2;
+			name = (Identifier) child2;
 		}
 		parameters = children.stream().filter(e -> FunctionParameter.class.isInstance(e))
 				.map(e -> FunctionParameter.class.cast(e)).toArray(FunctionParameter[]::new);

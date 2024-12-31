@@ -8,18 +8,34 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import editor.MyDocument;
 import info.ParsingInfo;
+import info.Scope;
+import info.VariableInfo;
 import language.SyntaxHighlighting;
 
 public class TypelessDeclaration extends AnnotatedTree{
 	Pointer pointer;
-	AnnotatedToken name;
+	Identifier name;
 	ArraySpecifier arraySpec;
 	Initializer initializer;
 	
 	@Override
 	public void analyse(MyDocument document, ParsingInfo info) {
+		if(parent.parent instanceof TranslationUnit) {
+			name.type = SyntaxHighlighting.GLOBAL_IDENTIFIER_TYPE;
+			info.variables.add(createInfo());
+		}else {
+			name.type = SyntaxHighlighting.LOCALVAR_IDENTIFIER_TYPE;
+			Scope scope = getScope(name.symbol.getStartIndex(), info);
+			scope.variables.add(createInfo());
+		}
 	}
 
+	private VariableInfo createInfo() {
+		VariableInfo result = new VariableInfo();
+		result.name = name.symbol.getText();
+		result.offset = name.symbol.getStartIndex();
+		return result;
+	}
 
 	@Override
 	public void build() {
@@ -29,9 +45,9 @@ public class TypelessDeclaration extends AnnotatedTree{
 			pointer = (Pointer) children.get(indexOf);
 		}
 		
-		indexOf = types.indexOf(AnnotatedToken.class);
+		indexOf = types.indexOf(Identifier.class);
 		if (indexOf != -1) {
-			name = (AnnotatedToken) children.get(indexOf);
+			name = (Identifier) children.get(indexOf);
 		}
 		
 		indexOf = types.indexOf(ArraySpecifier.class);

@@ -12,7 +12,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import annotated_tree.AnnotatedError;
 import annotated_tree.AnnotatedToken;
 import annotated_tree.AnnotatedTree;
 import annotated_tree.ArrayAccess;
@@ -33,12 +32,14 @@ import annotated_tree.FunctionCall;
 import annotated_tree.FunctionDefinition;
 import annotated_tree.FunctionParameter;
 import annotated_tree.FunctionPrototype;
+import annotated_tree.Identifier;
 import annotated_tree.InitDeclaratorList;
 import annotated_tree.Initializer;
 import annotated_tree.IterationStatement;
 import annotated_tree.JumpStatement;
 import annotated_tree.LayoutQualifier;
 import annotated_tree.Pointer;
+import annotated_tree.PrimaryExpression;
 import annotated_tree.SelectionStatement;
 import annotated_tree.SimpleDeclaration;
 import annotated_tree.StorageQualifier;
@@ -122,11 +123,11 @@ import main.java.testNVIDIA.NVIDIAParser.Type_specifier_nonarrayContext;
 import main.java.testNVIDIA.NVIDIAParser.Typeless_declarationContext;
 import main.java.testNVIDIA.NVIDIAParser.Unary_expressionContext;
 import main.java.testNVIDIA.NVIDIAParser.Unary_operatorContext;
+import main.java.testNVIDIA.NVIDIALexer;
 import main.java.testNVIDIA.NVIDIAParserListener;
 
 public class ParsingAnalyzer implements NVIDIAParserListener {
 	private MyDocument document;
-	private ParsingInfo info;
 	private Stack<AnnotatedTree> stack;
 	private boolean ignoreRule = false;
 	private boolean skipBranch = false;
@@ -135,22 +136,23 @@ public class ParsingAnalyzer implements NVIDIAParserListener {
 		this.document = document;
 	}
 
-	public AnnotatedTree analyze(ParseTree tree, PreParsingInfo preParsingInfo) {
-		this.info = new ParsingInfo();
-
+	public ParsingInfo analyze(ParseTree tree, PreParsingInfo preParsingInfo) {
+		ParsingInfo info = new ParsingInfo();
 		stack = new Stack<>();
+	
 		walk(tree);
 		AnnotatedTree result = stack.pop();
 		assert stack.isEmpty();
-		analyse(result);
-		return result;
+		info.tree = result;
+		analyse(result, info);
+		return info;
 	}
 
-	private void analyse(AnnotatedTree node) {
+	private void analyse(AnnotatedTree node, ParsingInfo info) {
 		int n = node.getChildCount();
 		node.analyse(document, info);
 		for (int i = 0; i < n; i++) {
-			analyse(node.getChild(i));
+			analyse(node.getChild(i), info);
 		}
 	}
 
@@ -169,11 +171,6 @@ public class ParsingAnalyzer implements NVIDIAParserListener {
 
 		if (skipBranch) {
 			skipBranch = false;
-//			int start = ctx.start.getStartIndex();
-//			int stop = ctx.stop.getStopIndex();
-//			if (start >= 0 && stop > 0) {
-//				document.setCharacterAttributes(start, stop - start + 1, SyntaxHighlighting.WARNING_HIGHLIGHT, false);
-//			}
 			basicHighlighting(tree);
 			return;
 		}
@@ -373,7 +370,7 @@ public class ParsingAnalyzer implements NVIDIAParserListener {
 
 	@Override
 	public void enterCompound_statement_no_new_scope(Compound_statement_no_new_scopeContext ctx) {
-		stack.push(new CompoundStatement());
+		stack.push(new CompoundStatement(ctx));
 	}
 
 	@Override
@@ -402,7 +399,7 @@ public class ParsingAnalyzer implements NVIDIAParserListener {
 
 	@Override
 	public void enterCompound_statement(Compound_statementContext ctx) {
-		stack.push(new CompoundStatement());
+		stack.push(new CompoundStatement(ctx));
 	}
 
 	@Override
@@ -684,12 +681,11 @@ public class ParsingAnalyzer implements NVIDIAParserListener {
 
 	@Override
 	public void enterPrimary_expression(Primary_expressionContext ctx) {
-		ignoreRule();
+		stack.push(new PrimaryExpression());
 	}
 
 	@Override
 	public void exitPrimary_expression(Primary_expressionContext ctx) {
-		ignoreRule();
 	}
 
 	@Override
@@ -942,25 +938,26 @@ public class ParsingAnalyzer implements NVIDIAParserListener {
 		try {
 			child.build();
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		stack.peek().addChild(child);
-		// add child to parent
-//		stack.getLast().addChild(child);
 	}
 
 	@Override
 	public void visitTerminal(TerminalNode node) {
-//		stack.getLast().addChild(new AnnotatedToken(node));
-		stack.peek().addChild(new AnnotatedToken(node));
+		if(node.getSymbol().getType() == NVIDIALexer.IDENTIFIER) {
+			stack.peek().addChild(new Identifier(node));
+		}else {
+			stack.peek().addChild(new AnnotatedToken(node));
+		}
 	}
 
 	@Override
 	public void visitErrorNode(ErrorNode node) {
-//		stack.getLast().addChild(new AnnotatedError(node));
-		stack.peek().addChild(new AnnotatedError(node));
+		throw new IllegalStateException();
 	}
 
-	private void basicHighlighting(ParseTree tree) {
+	public void basicHighlighting(ParseTree tree) {
 		if (tree instanceof ErrorNode) {
 			basicHighlighting((ErrorNode) tree);
 			return;

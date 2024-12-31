@@ -4,9 +4,9 @@ import editor.MyDocument;
 import info.ParsingInfo;
 import language.SyntaxHighlighting;
 
-public class FunctionCall extends AnnotatedTree{
-	AnnotatedToken name;
-	
+public class FunctionCall extends AnnotatedTree {
+	Identifier name;
+
 	@Override
 	public void analyse(MyDocument document, ParsingInfo info) {
 		if(name != null) {
@@ -16,6 +16,10 @@ public class FunctionCall extends AnnotatedTree{
 
 	@Override
 	public void build() {
-		name = (AnnotatedToken) children.get(0);
+		AnnotatedTree child = children.get(0);
+		if(child instanceof PrimaryExpression && child.getChild(0) instanceof Identifier) {
+			name = (Identifier) child.getChild(0);
+			children.set(0, name);
+		}
 	}
 }

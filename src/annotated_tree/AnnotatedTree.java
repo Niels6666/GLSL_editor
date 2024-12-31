@@ -5,12 +5,15 @@ import java.util.List;
 
 import editor.MyDocument;
 import info.ParsingInfo;
+import info.Scope;
 
 public abstract class AnnotatedTree {
 	protected List<AnnotatedTree> children = new ArrayList<>();
+	protected AnnotatedTree parent;
 
 	public void addChild(AnnotatedTree child) {
 		children.add(child);
+		child.parent = this;
 	}
 
 	public int getChildCount() {
@@ -29,8 +32,21 @@ public abstract class AnnotatedTree {
 	public String toString() {
 		return getClass().getSimpleName();
 	}
-
-	public boolean hasErrors() {
-		return children.stream().anyMatch(e->e instanceof AnnotatedError);
+	
+	protected Scope getScope(int offset, ParsingInfo info){
+		Scope result = null;
+		for(Scope scope : info.scopes) {
+			if(scope.start < offset && offset > scope.stop) {
+				if(result != null) {
+					if((result.stop - result.start) > (scope.stop - scope.start)) {
+						result = scope;
+					}
+				}else {
+					result = scope;
+				}
+			}
+		}
+		return result;
 	}
+
 }

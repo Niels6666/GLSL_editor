@@ -4,5 +4,6 @@ public class FunctionInfo {
 	public String retType;
 	public String name;
 	public String[] params;
-	public Scope scope;
+	public int start;
+	public int stop;
 }

@@ -8,7 +8,7 @@ import language.SyntaxHighlighting;
 public class FunctionDefinition extends AnnotatedTree {
 	FullySpecifiedType type;
 	Pointer pointer;
-	AnnotatedToken name;
+	Identifier name;
 	FunctionParameter[] parameters;
 	CompoundStatement body;
 
@@ -21,7 +21,8 @@ public class FunctionDefinition extends AnnotatedTree {
 	private FunctionInfo createInfo() {
 		FunctionInfo res = new FunctionInfo();
 		res.name = name.toString();
-		
+		res.start = body.rule.getStart().getStartIndex();
+		res.stop = body.rule.getStop().getStopIndex();
 		return res;
 	}
 
@@ -31,9 +32,9 @@ public class FunctionDefinition extends AnnotatedTree {
 		AnnotatedTree child2 = children.get(1);
 		if (child2 instanceof Pointer) {
 			pointer = (Pointer) child2;
-			name = (AnnotatedToken) children.get(2);
+			name = (Identifier) children.get(2);
 		} else {
-			name = (AnnotatedToken) child2;
+			name = (Identifier) child2;
 		}
 		body = (CompoundStatement) children.get(children.size() - 1);
 		parameters = children.stream().filter(e -> FunctionParameter.class.isInstance(e))

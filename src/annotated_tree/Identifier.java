@@ -7,22 +7,36 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import editor.CodeTree;
 import editor.MyDocument;
+import info.FunctionInfo;
 import info.ParsingInfo;
+import info.Scope;
 import language.SyntaxHighlighting;
 
-public class AnnotatedToken extends AnnotatedTree {
+public class Identifier extends AnnotatedTree {
 	public Token symbol;
+	public int type;
 
-	public AnnotatedToken(TerminalNode node) {
+	public Identifier(TerminalNode node) {
 		this.symbol = node.getSymbol();
+		type = symbol.getType();
 	}
-
+	
 	@Override
 	public void analyse(MyDocument document, ParsingInfo info) {
 		int offset = symbol.getStartIndex();
 		int length = symbol.getText().length();
 
-		AttributeSet highlight = SyntaxHighlighting.getColor(symbol.getType());
+		AttributeSet highlight = SyntaxHighlighting.getColor(type);
+		if (highlight == null) {
+			Scope scope = getScope(symbol.getStartIndex(), info);
+			if(scope != null) {
+				FunctionInfo function = null;
+				for(FunctionInfo func:info.functions) {
+					
+				}
+			}
+		}
+
 		if (highlight == null) {
 			highlight = SyntaxHighlighting.UNKNOWN;
 		}
@@ -39,4 +53,5 @@ public class AnnotatedToken extends AnnotatedTree {
 	@Override
 	public void build() {
 	}
+
 }

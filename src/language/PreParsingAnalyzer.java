@@ -8,6 +8,7 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import editor.MyDocument;
@@ -60,12 +61,11 @@ public class PreParsingAnalyzer extends NVIDIAPreParserBaseListener {
 		this.document = document;
 	}
 
-	public PreParsingInfo analyze(ParseTree parseTree) {
+	public void analyze(ParseTree parseTree) {
 		info = new PreParsingInfo();
 		ParseTreeWalker.DEFAULT.walk(this, parseTree);
-		return info;
 	}
-
+	
 	@Override
 	public void visitTerminal(TerminalNode node) {
 		Token token = node.getSymbol();
@@ -91,6 +91,39 @@ public class PreParsingAnalyzer extends NVIDIAPreParserBaseListener {
 
 	@Override
 	public void visitErrorNode(ErrorNode node) {
+		throw new IllegalStateException();
+	}
+	
+
+	public void basicHighlighting(ParseTree tree) {
+		if (tree instanceof ErrorNode) {
+			basicHighlighting((ErrorNode) tree);
+			return;
+		} else if (tree instanceof TerminalNode) {
+			basicHighlighting((TerminalNode) tree);
+			return;
+		}
+
+		RuleNode r = (RuleNode) tree;
+		int n = r.getChildCount();
+		for (int i = 0; i < n; i++) {
+			basicHighlighting(r.getChild(i));
+		}
+	}
+
+	private void basicHighlighting(TerminalNode node) {
+		Token token = node.getSymbol();
+		int offset = token.getStartIndex();
+		int length = token.getText().length();
+
+		AttributeSet highlight = SyntaxHighlighting.getColor(token.getType());
+		if (highlight == null) {
+			highlight = SyntaxHighlighting.UNKNOWN;
+		}
+		document.setCharacterAttributes(offset, length, highlight, false);
+	}
+
+	private void basicHighlighting(ErrorNode node) {
 		Token token = node.getSymbol();
 		int line = token.getLine();
 		int pos = token.getCharPositionInLine();
@@ -98,6 +131,6 @@ public class PreParsingAnalyzer extends NVIDIAPreParserBaseListener {
 		Element row = root.getElement(line - 1);
 		int offs0 = row.getStartOffset() + pos;
 		int offs1 = row.getEndOffset();
-		document.setCharacterAttributes(offs0, offs1-offs0, SyntaxHighlighting.ERROR_HIGHLIGHT, false);
+		document.setCharacterAttributes(offs0, offs1 - offs0, SyntaxHighlighting.ERROR_HIGHLIGHT, false);
 	}
 }
