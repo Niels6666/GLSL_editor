@@ -25,7 +25,7 @@ public class TypelessDeclaration extends AnnotatedTree{
 			info.variables.add(createInfo());
 		}else {
 			name.type = SyntaxHighlighting.LOCALVAR_IDENTIFIER_TYPE;
-			Scope scope = getScope(name.symbol.getStartIndex(), info);
+			Scope scope = info.getScope(name.symbol.getStartIndex());
 			scope.variables.add(createInfo());
 		}
 	}

@@ -7,7 +7,10 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 
+import javax.swing.JLabel;
 import javax.swing.JTextPane;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.text.BadLocationException;
@@ -20,17 +23,27 @@ import javax.swing.undo.UndoableEdit;
 
 public class TextEditor extends JTextPane implements UndoableEditListener {
 	private static final long serialVersionUID = 3287125221658043840L;
-	private static final Color backgroundColor = new Color(47, 47, 47);
+	private static final Color backgroundColor = new Color(57, 57, 57);
 	private static final Font editorFont = new Font("Consolas", Font.PLAIN, 15);
+
+	private String title;
+	private JLabel label;
 
 	private UndoManager undoManager = new UndoManager();
 
-	public TextEditor() {
+	public TextEditor(String title, boolean editable) {
 		this.setFont(editorFont);
 		this.setBackground(backgroundColor);
 		this.setCaretColor(Color.white);
-		this.setEditable(true);
+		this.setEditable(editable);
 		this.getDocument().addUndoableEditListener(this);
+
+		this.title = title;
+		this.label = new JLabel(title);
+	}
+
+	public JLabel getTitle() {
+		return label;
 	}
 
 	@Override
@@ -82,6 +95,11 @@ public class TextEditor extends JTextPane implements UndoableEditListener {
 		UndoableEdit edit = e.getEdit();
 		if (edit.getPresentationName().equals("style change")) {
 			return;
+		}
+		try {
+			getMyDocument().buildAST();
+		} catch (BadLocationException e1) {
+			e1.printStackTrace();
 		}
 		undoManager.undoableEditHappened(e);
 	}

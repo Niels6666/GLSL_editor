@@ -5,7 +5,6 @@ import javax.swing.text.AttributeSet;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import editor.CodeTree;
 import editor.MyDocument;
 import info.ParsingInfo;
 import language.SyntaxHighlighting;
@@ -30,10 +29,8 @@ public class AnnotatedToken extends AnnotatedTree {
 	}
 
 	
-	@Override
 	public String toString() {
-		String nameType = symbol.getType() == Token.EOF ? "EOF" : CodeTree.names.get(symbol.getType());
-		return "[TerminalNode " + symbol.getText() + "<" + nameType + ">" + " ]";
+		return "[TerminalNode " + symbol.getText() + " ]";
 	}
 
 	@Override

@@ -5,6 +5,8 @@ import java.util.List;
 
 import editor.MyDocument;
 import info.ParsingInfo;
+import info.Scope;
+import info.VariableInfo;
 import language.SyntaxHighlighting;
 
 public class StructDeclarator extends AnnotatedTree {
@@ -15,6 +17,24 @@ public class StructDeclarator extends AnnotatedTree {
 	@Override
 	public void analyse(MyDocument document, ParsingInfo info) {
 		name.type = SyntaxHighlighting.TYPE_MEMBER_TYPE;
+		if (parent.parent instanceof BlockStructure && ((BlockStructure)parent.parent).instanceName == null) {
+			Scope scope = info.getScope(name.symbol.getStartIndex());
+			VariableInfo varInfo = createInfo();
+			if(scope != null) {
+				scope.variables.add(varInfo);
+				name.type = SyntaxHighlighting.LOCALVAR_IDENTIFIER_TYPE;
+			}else {
+				info.variables.add(varInfo);
+				name.type = SyntaxHighlighting.GLOBAL_IDENTIFIER_TYPE;
+			}
+		}
+	}
+	
+	private VariableInfo createInfo() {
+		VariableInfo res = new VariableInfo();
+		res.name = name.symbol.getText();
+		res.offset = name.symbol.getStartIndex();
+		return res;
 	}
 
 	@Override

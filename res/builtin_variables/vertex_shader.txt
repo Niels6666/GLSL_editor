@@ -1,0 +1,15 @@
+// Vertex shader inputs
+in int gl_VertexID;
+in int gl_InstanceID;
+in int gl_DrawID;
+in int gl_BaseVertex;
+in int gl_BaseInstance;
+
+// Vertex shader outputs
+out gl_PerVertex
+{
+	vec4 gl_Position;
+	float gl_PointSize;
+	float gl_ClipDistance[];
+	float gl_CullDistance[];
+};

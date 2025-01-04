@@ -18,7 +18,14 @@ public class CompoundStatement extends AnnotatedTree{
 		int start = rule.getStart().getStartIndex();
 		int stop = rule.getStop().getStopIndex();
 		Scope scope = new Scope(start, stop);
+		
+		Scope parentScope = info.getScope(rule.getStart().getStartIndex());
+		if(parentScope != null) {
+			scope.inherit(parentScope);
+		}
+		
 		info.scopes.add(scope);
+		
 	}
 
 	@Override

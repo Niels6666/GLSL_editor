@@ -39,7 +39,6 @@ import annotated_tree.IterationStatement;
 import annotated_tree.JumpStatement;
 import annotated_tree.LayoutQualifier;
 import annotated_tree.Pointer;
-import annotated_tree.PrimaryExpression;
 import annotated_tree.SelectionStatement;
 import annotated_tree.SimpleDeclaration;
 import annotated_tree.StorageQualifier;
@@ -681,11 +680,12 @@ public class ParsingAnalyzer implements NVIDIAParserListener {
 
 	@Override
 	public void enterPrimary_expression(Primary_expressionContext ctx) {
-		stack.push(new PrimaryExpression());
+		ignoreRule();
 	}
 
 	@Override
 	public void exitPrimary_expression(Primary_expressionContext ctx) {
+		ignoreRule();
 	}
 
 	@Override

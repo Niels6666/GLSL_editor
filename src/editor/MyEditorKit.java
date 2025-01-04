@@ -3,6 +3,7 @@ package editor;
 import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -68,6 +69,7 @@ public class MyEditorKit extends StyledEditorKit {
 	private static final MyAction[] defaultActions = new MyAction[] { //
 			new MyAction("undo", KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK, TextEditor::undo), //
 			new MyAction("redo", KeyEvent.VK_Y, InputEvent.CTRL_DOWN_MASK, TextEditor::redo), //
+//			new MyAction("paste", KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK, TextEditor::redo), //
 			new MyAction("delete-line", KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK, TextEditor::deleteLine),//
 	};
 

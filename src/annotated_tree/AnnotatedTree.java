@@ -32,21 +32,5 @@ public abstract class AnnotatedTree {
 	public String toString() {
 		return getClass().getSimpleName();
 	}
-	
-	protected Scope getScope(int offset, ParsingInfo info){
-		Scope result = null;
-		for(Scope scope : info.scopes) {
-			if(scope.start < offset && offset > scope.stop) {
-				if(result != null) {
-					if((result.stop - result.start) > (scope.stop - scope.start)) {
-						result = scope;
-					}
-				}else {
-					result = scope;
-				}
-			}
-		}
-		return result;
-	}
 
 }

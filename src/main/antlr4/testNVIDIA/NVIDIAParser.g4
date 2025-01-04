@@ -170,7 +170,7 @@ init_declarator_list
     ;
 
 single_declaration
-    : fully_specified_type typeless_declaration
+    : fully_specified_type typeless_declaration?
     ;
 
 typeless_declaration

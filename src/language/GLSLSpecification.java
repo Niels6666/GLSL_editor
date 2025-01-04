@@ -19,6 +19,7 @@ public final class GLSLSpecification {
 	public static final Set<String> KEYWORDS = Set.of(makeKeywords());
 	public static final Set<String> RESERVED = Set.of(makeReservedKeywords());
 	public static final Set<String> IMAGE_FORMATS = Set.of(makeImageFormats());
+	public static final List<String> templates = makeTemplates();
 
 	private static String[] makeKeywords() {
 		return new String[] { "const", "uniform", "buffer", "shared", "attribute", "varying", "coherent", "volatile",
@@ -65,4 +66,19 @@ public final class GLSLSpecification {
 				"r16ui" };
 	}
 
+	private static List<String> makeTemplates() {
+		try {
+			return List.of( //
+					Files.readString(new File("res/templates/common.txt").toPath()),
+					Files.readString(new File("res/templates/compute_shader.txt").toPath()),
+					Files.readString(new File("res/templates/vertex_shader.txt").toPath()),
+					Files.readString(new File("res/templates/tess_control_shader.txt").toPath()),
+					Files.readString(new File("res/templates/tess_eval_shader.txt").toPath()),
+					Files.readString(new File("res/templates/geometry_shader.txt").toPath()),
+					Files.readString(new File("res/templates/fragment_shader.txt").toPath())//
+			);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

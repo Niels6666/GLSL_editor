@@ -34,7 +34,7 @@ public final class SyntaxHighlighting {
 		StyleConstants.setBackground(WARNING_HIGHLIGHT, new Color(255, 255, 0, 100));
 	}
 
-	public static final AttributeSet UNKNOWN = create(new Color(250, 170, 170), false, false);
+	public static final AttributeSet UNKNOWN = create(new Color(255, 175, 172), false, false);
 	public static final AttributeSet COMMENT = create(new Color(128, 128, 128), false, false);
 
 	// returned by getColor()
@@ -59,12 +59,12 @@ public final class SyntaxHighlighting {
 
 	public static final AttributeSet LAYOUT_IDENTIFIER = create(new Color(177, 102, 218), true, false);
 	public static final AttributeSet TYPE_NAME = create(new Color(18, 144, 195), false, false);
-	public static final AttributeSet TYPE_MEMBER = create(new Color(102, 225, 248), false, false);
+	public static final AttributeSet TYPE_MEMBER = create(new Color(92, 205, 228), false, false);
 	public static final AttributeSet FUNCTION_DECLARATION = create(new Color(30, 181, 64), false, false);
 	public static final AttributeSet FUNCTION_CALL = create(new Color(150, 236, 58), false, false);
 	public static final AttributeSet PARAMETER_IDENTIFIER = create(new Color(99, 169, 255), false, false);
 	public static final AttributeSet LOCALVAR_IDENTIFIER = create(new Color(243, 236, 121), false, false);
-	public static final AttributeSet GLOBAL_IDENTIFIER = create(new Color(141, 218, 248), true, true);
+	public static final AttributeSet GLOBAL_IDENTIFIER = create(new Color(141, 218, 248), true, false);
 
 	private static final AttributeSet create(Color color, boolean italic, boolean bold) {
 		MutableAttributeSet res = new SimpleAttributeSet();

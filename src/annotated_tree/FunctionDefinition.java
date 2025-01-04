@@ -1,5 +1,9 @@
 package annotated_tree;
 
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Stream;
+
 import editor.MyDocument;
 import info.FunctionInfo;
 import info.ParsingInfo;
@@ -17,12 +21,13 @@ public class FunctionDefinition extends AnnotatedTree {
 		name.type = SyntaxHighlighting.FUNCTION_DECLARATION_TYPE;
 		info.functions.add(createInfo());
 	}
-	
+
 	private FunctionInfo createInfo() {
 		FunctionInfo res = new FunctionInfo();
 		res.name = name.toString();
 		res.start = body.rule.getStart().getStartIndex();
 		res.stop = body.rule.getStop().getStopIndex();
+		res.params = Set.of(Stream.of(parameters).filter(p->p.name != null).map(p -> p.name.symbol.getText()).toArray(String[]::new));
 		return res;
 	}
 

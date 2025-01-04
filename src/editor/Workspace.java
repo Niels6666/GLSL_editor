@@ -1,95 +1,94 @@
 package editor;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.FileSystem;
-import java.nio.file.Path;
-import java.nio.file.StandardWatchEventKinds;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchEvent.Kind;
-import java.nio.file.WatchKey;
-import java.nio.file.WatchService;
+import java.util.ArrayList;
 import java.util.List;
 
-public final class Workspace {
-	private static Path folderPath;
-	private static WatchService folderWatch;
-	private static List<WorkspaceListener> listeners;
+import javax.swing.SwingUtilities;
 
-	public static void setWorkspaceLocation(Path newFolderPath) throws IOException {
-		if (folderPath != null) {
-			folderWatch.close();
+import info.FileInfo;
+
+public class Workspace {
+	public final FileExplorer fileExplorer;
+	public final MyTabbedPane myTabbedPane;
+
+	private final ArrayList<FileInfo> inMemory = new ArrayList<>();
+
+	public Workspace(List<String> config) throws IOException {
+		String folderPath = "";
+		if (config.size() > 0) {
+			folderPath = config.get(0);
 		}
-		folderPath = newFolderPath;
-		FileSystem fs = newFolderPath.getFileSystem();
-		folderWatch = fs.newWatchService();
-		
-		for (WorkspaceListener l : listeners) {
-			l.workspaceLocationChanded(newFolderPath);
+
+		if (!folderPath.isBlank()) {
+			fileExplorer = new FileExplorer(this, new File(folderPath).toPath());
+		} else {
+			fileExplorer = null;
 		}
-	}
-	
-	public static Path getWorkspaceLocation() {
-		return folderPath;
-	}
-	
-	public void addWorkspaceListener(WorkspaceListener listener) {
-		listeners.add(listener);
-	}
-	
-	public void removeWorkspaceListener(WorkspaceListener listener) {
-		listeners.remove(listener);
+
+		myTabbedPane = new MyTabbedPane(this);
+
+		String[] openEditors;
+		if (config.size() < 2) {
+			openEditors = new String[] {};
+		} else {
+			openEditors = config.subList(1, config.size()).toArray(String[]::new);
+		}
+
+		for (String pathToFile : openEditors) {
+			openFile(pathToFile);
+		}
 	}
 
-	public static void updateFolderWatch() {
-		WatchKey key = folderWatch.poll();
-		if (key == null) {
+	private void save(String pathToFile) {
+		try {
+			File file = new File(pathToFile);
+			FileWriter writer = new FileWriter(file);
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void openFile(String pathToFile) {
+		try {
+			myTabbedPane.openTab(pathToFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void saveFile() {
+		String pathToFile = myTabbedPane.getCurrentTab();
+		if (pathToFile == null) {
 			return;
 		}
-
-		for (WatchEvent<?> watchEvent : key.pollEvents()) {
-			Kind<?> kind = watchEvent.kind();
-			if (kind == StandardWatchEventKinds.OVERFLOW) {
-				for (WorkspaceListener l : listeners) {
-					l.watchOverflow();
-				}
-			}
-
-			@SuppressWarnings("unchecked")
-			Path path = ((WatchEvent<Path>) watchEvent).context();
-			if (kind == StandardWatchEventKinds.ENTRY_CREATE) {
-				for (WorkspaceListener l : listeners) {
-					l.entryCreated(path);
-				}
-			}
-
-			if (kind == StandardWatchEventKinds.ENTRY_DELETE) {
-				for (WorkspaceListener l : listeners) {
-					l.entryDeleted(path);
-				}
-			}
-
-			if (kind == StandardWatchEventKinds.ENTRY_MODIFY) {
-				for (WorkspaceListener l : listeners) {
-					l.entryModified(path);
-				}
-			}
-		}
-
-		if (!key.reset()) {
-			throw new IllegalStateException("Watch key on workspace is invalid");
-		}
-
+		save(pathToFile);
 	}
 
-	public static interface WorkspaceListener {
-		public void workspaceLocationChanded(Path path);
-		
-		public void watchOverflow();
+	public void saveAllFiles() {
+		for (String s : myTabbedPane.getOpenTabs()) {
+			save(s);
+		}
+	}
 
-		public void entryCreated(Path path);
+	public void close() throws IOException {
+		// write state to config file
+		File fileConfig = new File("res/glsl_editor.ini");
+		FileWriter writer = new FileWriter(fileConfig);
+		writer.write(fileExplorer.folderPath.toAbsolutePath().toString());
+		writer.write(System.lineSeparator());
+		for (String s : myTabbedPane.getOpenTabs()) {
+			writer.write(s);
+			writer.write(System.lineSeparator());
+		}
+		writer.close();
 
-		public void entryDeleted(Path path);
-
-		public void entryModified(Path path);
+		if (fileExplorer != null) {
+			fileExplorer.close();
+		}
+		myTabbedPane.close();
 	}
 }

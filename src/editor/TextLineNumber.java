@@ -33,7 +33,7 @@ import org.antlr.v4.runtime.misc.Interval;
  */
 public class TextLineNumber extends JPanel implements CaretListener, DocumentListener {
 	private static final long serialVersionUID = -4805391428202814917L;
-	private static final Color backgroundColor = new Color(47, 47, 47);
+	private static final Color backgroundColor = new Color(57, 57, 57);
 	private static final Color numbersColor = new Color(119, 145, 154);
 	private static final Font editorFont = new Font("Consolas", Font.PLAIN, 15);
 
@@ -49,7 +49,6 @@ public class TextLineNumber extends JPanel implements CaretListener, DocumentLis
 		setFont(editorFont);
 		component.getDocument().addDocumentListener(this);
 		component.addCaretListener(this);
-
 		currentScope = Interval.INVALID;
 	}
 
@@ -98,11 +97,11 @@ public class TextLineNumber extends JPanel implements CaretListener, DocumentLis
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
-		
+
 		final int lineHeight = fontMetrics.getHeight();
 
-		final int scopeY = clip.y + (currentScope.a) * lineHeight;
-		final int scopeH = (currentScope.b - currentScope.a + 1) * lineHeight;
+		final int scopeY = (currentScope.a + 1) * lineHeight - fontMetrics.getAscent();
+		final int scopeH = (currentScope.b - currentScope.a + 1) * lineHeight - fontMetrics.getDescent();
 
 		g2d.setColor(scopeColor);
 		g2d.fillRect(0, scopeY, scopeWidth, scopeH);

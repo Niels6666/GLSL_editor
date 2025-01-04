@@ -17,11 +17,13 @@ import javax.swing.text.JTextComponent;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import info.ParsingInfo;
+import info.PreParsingInfo;
+import info.Scope;
 import language.ParsingAnalyzer;
 import language.PreParsingAnalyzer;
 import language.SyntaxHighlighting;
@@ -36,9 +38,7 @@ public class MyDocument extends DefaultStyledDocument implements CaretListener {
 
 	private PreParsingAnalyzer preParsingAnalyzer;
 	private ParsingAnalyzer parsingAnalyzer;
-
-	private AbstractSyntaxTree abstractSyntaxTree;
-	private CodeTree codeTree;
+	private ParsingInfo info;
 
 	public MyDocument() {
 		documentFilter = new MyDocumentFilter();
@@ -47,13 +47,12 @@ public class MyDocument extends DefaultStyledDocument implements CaretListener {
 	}
 
 	public Interval getScope(int offset) {
-//		Interval smallest = scopes.get(0);
-//		for (Interval interval : scopes) {
-//			if (interval.length() <= smallest.length() && (offset >= interval.a && offset <= interval.b)) {
-//				smallest = interval;
-//			}
-//		}
-//		return smallest;
+		if (info != null) {
+			Scope scope = info.getScope(offset);
+			if (scope != null) {
+				return new Interval(scope.start, scope.stop);
+			}
+		}
 		return new Interval(0, getLength());
 	}
 
@@ -62,30 +61,22 @@ public class MyDocument extends DefaultStyledDocument implements CaretListener {
 		return documentFilter;
 	}
 
-	public void setAbstractSyntaxTree(AbstractSyntaxTree abstractSyntaxTree) {
-		this.abstractSyntaxTree = abstractSyntaxTree;
-	}
-
-	public void setCodeTree(CodeTree codeTree) {
-		this.codeTree = codeTree;
-	}
-
 	@Override
 	public void replace(int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
 		super.replace(offset, length, text, attrs);
-		buildAST();
+//		buildAST();
 	}
 
 	@Override
 	public void remove(int offs, int len) throws BadLocationException {
 		super.remove(offs, len);
-		buildAST();
+//		buildAST();
 	}
 
 	@Override
 	public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
 		super.insertString(offs, str, a);
-		buildAST();
+//		buildAST();
 	}
 
 	public void buildAST() throws BadLocationException {
@@ -94,6 +85,8 @@ public class MyDocument extends DefaultStyledDocument implements CaretListener {
 
 		setCharacterAttributes(0, length, SyntaxHighlighting.COMMENT, true);
 
+		info = null;
+
 		// pre parsing
 		{
 			NVIDIALexer lexer = new NVIDIALexer(CharStreams.fromString(text));
@@ -101,12 +94,22 @@ public class MyDocument extends DefaultStyledDocument implements CaretListener {
 			NVIDIAPreParser parser = new NVIDIAPreParser(input);
 			parser.setProfile(false);
 			parser.setTrace(false);
-//			parser.removeErrorListeners();
+			parser.removeErrorListeners();
 
 			ParseTree parseTree = parser.translation_unit(); // root rule
 			if (parser.getNumberOfSyntaxErrors() == 0) {
 				preParsingAnalyzer.analyze(parseTree);
-			}else {
+				PreParsingInfo preParsingInfo = preParsingAnalyzer.info;
+				char[] textArray = text.toCharArray();
+				for (Token symbol : preParsingInfo.toSkip) {
+					int start = symbol.getStartIndex();
+					int stop = symbol.getStopIndex() + 1;
+					for (int i = start; i < stop; i++) {
+						textArray[i] = ' ';
+					}
+				}
+				text = new String(textArray);
+			} else {
 				preParsingAnalyzer.basicHighlighting(parseTree);
 			}
 		}
@@ -118,13 +121,12 @@ public class MyDocument extends DefaultStyledDocument implements CaretListener {
 			NVIDIAParser parser = new NVIDIAParser(input);
 			parser.setProfile(false);
 			parser.setTrace(false);
-//			parser.removeErrorListeners();
+			parser.removeErrorListeners();
 
 			ParseTree parseTree = parser.translation_unit(); // root rule
 			if (parser.getNumberOfSyntaxErrors() == 0) {
-				ParsingInfo info = parsingAnalyzer.analyze(parseTree, preParsingAnalyzer.info);
-				codeTree.buildTree(info.tree);
-			}else {
+				info = parsingAnalyzer.analyze(parseTree, preParsingAnalyzer.info);
+			} else {
 				parsingAnalyzer.basicHighlighting(parseTree);
 
 			}
